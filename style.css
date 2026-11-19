@@ -107,7 +107,13 @@ td.notes { color: var(--muted); max-width: 220px; overflow: hidden; text-overflo
 .thumb.ph { display: grid; place-items: center; color: var(--muted); font-size: 18px; }
 
 .stars { color: var(--star); letter-spacing: 1px; white-space: nowrap; }
-.stars .off { color: var(--line); }
+.star { color: var(--star); }
+.star.off { color: var(--line); }
+.star.half {
+  background: linear-gradient(90deg, var(--star) 50%, var(--line) 50%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
 .stars.big { font-size: 34px; letter-spacing: 4px; margin-top: 4px; }
 .stars.big span { cursor: pointer; }
 

@@ -1,7 +1,13 @@
 "use strict";
 
 /* ---------- Konstanten ---------- */
-const MEALS = ["Frühstück", "Mittagessen", "Abendessen", "Snack", "Sonstiges"];
+const MEALS = ["Frühstück / Abendessen", "Mittagessen", "Snack / Süßigkeiten", "Sonstiges"];
+// Alte Werte aus früheren Versionen auf die neuen Gruppen abbilden
+function normalizeMeal(m) {
+  if (m === "Frühstück" || m === "Abendessen") return "Frühstück / Abendessen";
+  if (m === "Snack" || m === "Süßigkeiten") return "Snack / Süßigkeiten";
+  return MEALS.includes(m) ? m : "Sonstiges";
+}
 const DEFAULT_CATEGORIES = ["Nudeln", "Fleischersatz", "Süßigkeiten", "Snacks"];
 const DB_NAME = "supermarkt";
 
@@ -56,9 +62,13 @@ function parsePrice(s) {
 function fmtPrice(n) {
   return n == null ? "–" : n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+// Einzelner Stern: "full", "half" oder "off" (Bewertung in 0,5er-Schritten)
+function starClass(i, n) {
+  return n >= i ? "full" : n >= i - 0.5 ? "half" : "off";
+}
 function starsHTML(n) {
   let s = "";
-  for (let i = 1; i <= 5; i++) s += i <= n ? "★" : '<span class="off">★</span>';
+  for (let i = 1; i <= 5; i++) s += `<span class="star ${starClass(i, n)}">★</span>`;
   return s;
 }
 function esc(s) {
@@ -89,6 +99,11 @@ function downscale(file, maxSide = 1200) {
 async function load() {
   products = await dbAll("products");
   categories = (await dbAll("categories")).sort((a, b) => a.name.localeCompare(b.name, "de"));
+  // Einmalige Anpassung alter Daten (idempotent)
+  for (const p of products) {
+    const m = normalizeMeal(p.meal);
+    if (m !== p.meal) { p.meal = m; await dbPut("products", p); }
+  }
 }
 
 function sortValue(p, key) {
@@ -207,12 +222,17 @@ $("addBtn").onclick = () => openForm(null);
 
 /* ---------- Produkt-Formular ---------- */
 function renderFormStars() {
-  $("f-stars").innerHTML = [1, 2, 3, 4, 5].map((i) => `<span data-v="${i}" class="${i <= formRating ? "" : "off"}">★</span>`).join("");
+  $("f-stars").innerHTML = [1, 2, 3, 4, 5].map((i) => `<span data-v="${i}" class="star ${starClass(i, formRating)}">★</span>`).join("");
+  $("f-ratingText").textContent = formRating ? String(formRating).replace(".", ",") + " von 5" : "keine Bewertung";
 }
+// Linke Hälfte eines Sterns = halber Stern, rechte Hälfte = ganzer Stern
 $("f-stars").onclick = (e) => {
-  const v = e.target.dataset.v;
-  if (!v) return;
-  formRating = formRating === +v ? 0 : +v;
+  const star = e.target.closest("[data-v]");
+  if (!star) return;
+  const rect = star.getBoundingClientRect();
+  const left = e.clientX - rect.left < rect.width / 2;
+  const v = +star.dataset.v - (left ? 0.5 : 0);
+  formRating = formRating === v ? 0 : v;
   renderFormStars();
 };
 function showFormImage() {
@@ -229,7 +249,7 @@ function openForm(p) {
   $("f-cat").innerHTML = `<option value="">Keine</option>` + categories.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join("");
   $("f-cat").value = p ? p.categoryId || "" : "";
   $("f-meal").innerHTML = MEALS.map((m) => `<option>${m}</option>`).join("");
-  $("f-meal").value = p ? p.meal || "Mittagessen" : "Mittagessen";
+  $("f-meal").value = p ? normalizeMeal(p.meal) : "Mittagessen";
   $("f-notes").value = p ? p.notes || "" : "";
   formRating = p ? p.rating || 0 : 0;
   formImage = p ? p.image || null : null;
@@ -345,6 +365,7 @@ $("importFile").onchange = async (e) => {
     }
     for (const p of data.products) {
       p.categoryId = p.categoryId ? idMap.get(p.categoryId) || null : null;
+      p.meal = normalizeMeal(p.meal);
       await dbPut("products", p); // gleiche ID wird aktualisiert, neue werden ergänzt
     }
     await load(); renderAll();
