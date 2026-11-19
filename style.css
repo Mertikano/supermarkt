@@ -1,0 +1,168 @@
+:root {
+  --bg: #f4f5f4;
+  --card: #ffffff;
+  --text: #1c1f1d;
+  --muted: #6b726d;
+  --line: #dfe3e0;
+  --accent: #1f8a4c;
+  --accent-text: #ffffff;
+  --danger: #c93030;
+  --star: #f5b301;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121413;
+    --card: #1c1f1d;
+    --text: #eef1ef;
+    --muted: #98a09a;
+    --line: #2e332f;
+    --accent: #3cb371;
+    --accent-text: #08130c;
+    --danger: #ef6a6a;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: calc(56px + env(safe-area-inset-bottom));
+}
+[hidden] { display: none !important; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.topbar h1 { margin: 0; font-size: 22px; }
+
+main { padding: 12px 12px 24px; }
+
+.controls { display: flex; gap: 8px; margin-bottom: 10px; }
+.controls input { flex: 1; min-width: 0; }
+
+input, select, textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.controls select { width: 42%; }
+
+.btn {
+  font: inherit; font-weight: 600;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 14px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+.btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.btn.danger { color: var(--danger); }
+.btn.wide { display: block; width: 100%; margin-top: 10px; }
+.filebtn { cursor: pointer; }
+
+/* Tabelle */
+.tablewrap {
+  overflow-x: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+table { border-collapse: collapse; width: 100%; min-width: 760px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th {
+  position: sticky; top: 0;
+  background: var(--card);
+  font-size: 13px; color: var(--muted);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+th.sorted { color: var(--accent); }
+th.sorted::after { content: " ▲"; font-size: 10px; }
+th.sorted.desc::after { content: " ▼"; }
+tbody tr { cursor: pointer; }
+tbody tr:active { background: var(--bg); }
+tbody tr:last-child td { border-bottom: 0; }
+td.name { display: flex; align-items: center; gap: 10px; min-width: 170px; font-weight: 600; border-bottom: 1px solid var(--line); }
+tbody tr:last-child td.name { border-bottom: 0; }
+td.notes { color: var(--muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.thumb {
+  width: 44px; height: 44px; flex: none;
+  border-radius: 8px; object-fit: cover;
+  background: var(--bg); border: 1px solid var(--line);
+}
+.thumb.ph { display: grid; place-items: center; color: var(--muted); font-size: 18px; }
+
+.stars { color: var(--star); letter-spacing: 1px; white-space: nowrap; }
+.stars .off { color: var(--line); }
+.stars.big { font-size: 34px; letter-spacing: 4px; margin-top: 4px; }
+.stars.big span { cursor: pointer; }
+
+.empty, .count, .hint { color: var(--muted); font-size: 14px; }
+.empty { text-align: center; padding: 30px 0; }
+.count { text-align: center; margin: 10px 0 0; }
+
+/* Kategorien */
+.list { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.list li { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.list li:last-child { border-bottom: 0; }
+.list .grow { flex: 1; }
+.list .n { color: var(--muted); font-size: 14px; }
+.list button { background: none; border: 0; font-size: 18px; padding: 4px 8px; color: var(--muted); cursor: pointer; }
+
+/* Backup */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+.card h2 { margin: 0 0 6px; font-size: 18px; }
+.card p { margin: 6px 0; }
+
+/* Tabs */
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  display: flex;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tabs button {
+  flex: 1; font: inherit; font-size: 14px; font-weight: 600;
+  background: none; border: 0; color: var(--muted);
+  padding: 15px 0; cursor: pointer;
+}
+.tabs button.active { color: var(--accent); }
+
+/* Dialoge */
+dialog {
+  border: 0; border-radius: 16px; padding: 0;
+  width: min(560px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  background: var(--card); color: var(--text);
+}
+dialog::backdrop { background: rgba(0,0,0,.45); }
+#form { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+#form h2 { margin: 0; font-size: 20px; }
+#form label, #form .field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 600; }
+#form input, #form select, #form textarea { font-weight: 400; color: var(--text); }
+#f-img { max-width: 100%; max-height: 240px; border-radius: 10px; object-fit: contain; align-self: flex-start; cursor: zoom-in; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row.end { margin-top: 4px; }
+.spacer { flex: 1; }
+.imgdlg { background: #000; width: auto; }
+.imgdlg img { display: block; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); }
+
+/* Erste Spalte (Produktname) bleibt beim seitlichen Scrollen sichtbar */
+th:first-child, td.name { position: sticky; left: 0; z-index: 2; background: var(--card); box-shadow: 1px 0 0 var(--line); }
+td.name { max-width: 190px; }
+td.name span { overflow: hidden; text-overflow: ellipsis; }
