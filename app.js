@@ -193,7 +193,7 @@ function renderAll() {
 }
 
 /* ---------- Tabs ---------- */
-const titles = { products: "Produkte", categories: "Kategorien", backup: "Backup" };
+const titles = { products: "Produkte", categories: "Kategorien", backup: "Mehr" };
 document.querySelectorAll(".tabs button").forEach((b) => {
   b.onclick = () => {
     document.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("active", x === b));
@@ -374,6 +374,65 @@ $("importFile").onchange = async (e) => {
     msg("Import fehlgeschlagen: " + err.message);
   }
 };
+
+
+/* ---------- Design nach Jahreszeit ---------- */
+const THEMES = {
+  fruehling:   { label: "Frühling",   emoji: "🌸" },
+  sommer:      { label: "Sommer",     emoji: "☀️" },
+  herbst:      { label: "Herbst",     emoji: "🍂" },
+  winter:      { label: "Winter",     emoji: "❄️" },
+  ostern:      { label: "Ostern",     emoji: "🐣" },
+  weihnachten: { label: "Weihnachten", emoji: "🎄" },
+};
+function easterSunday(y) { // Gaußsche Osterformel
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(y, month - 1, day);
+}
+function autoTheme(now = new Date()) {
+  const y = now.getFullYear();
+  const today = new Date(y, now.getMonth(), now.getDate());
+  const e = easterSunday(y);
+  const from = new Date(e); from.setDate(e.getDate() - 14);  // 2 Wochen vor Ostern
+  const to = new Date(e); to.setDate(e.getDate() + 1);       // bis Ostermontag
+  if (today >= from && today <= to) return "ostern";
+  const md = (now.getMonth() + 1) * 100 + now.getDate();
+  if (md >= 1201 && md <= 1226) return "weihnachten";
+  if (md >= 1227 || md <= 320) return "winter";
+  if (md <= 620) return "fruehling";
+  if (md <= 922) return "sommer";
+  return "herbst";
+}
+function themePref() {
+  try { return localStorage.getItem("theme") || "auto"; } catch { return "auto"; }
+}
+function applyTheme() {
+  const pref = themePref();
+  const name = THEMES[pref] ? pref : autoTheme();
+  document.documentElement.dataset.theme = name;
+  $("themeEmoji").textContent = THEMES[name].emoji;
+  $("emptyEmoji").textContent = THEMES[name].emoji;
+  const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta && bg) meta.content = bg;
+  const sel = $("themeSel");
+  sel.innerHTML = `<option value="auto">Automatisch (jetzt: ${THEMES[autoTheme()].emoji} ${THEMES[autoTheme()].label})</option>` +
+    Object.entries(THEMES).map(([k, t]) => `<option value="${k}">${t.emoji} ${t.label}</option>`).join("");
+  sel.value = THEMES[pref] ? pref : "auto";
+}
+$("themeSel").onchange = (e) => {
+  try { localStorage.setItem("theme", e.target.value); } catch {}
+  applyTheme();
+};
+document.addEventListener("visibilitychange", () => { if (!document.hidden) applyTheme(); });
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+applyTheme();
 
 /* ---------- Start ---------- */
 (async function init() {

@@ -172,3 +172,35 @@ dialog::backdrop { background: rgba(0,0,0,.45); }
 th:first-child, td.name { position: sticky; left: 0; z-index: 2; background: var(--card); box-shadow: 1px 0 0 var(--line); }
 td.name { max-width: 190px; }
 td.name span { overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Jahreszeiten-Designs ---------- */
+.topbar h1 { color: var(--accent); }
+.topbar { border-bottom: 0; }
+.topbar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2, var(--accent)));
+}
+.big-emoji { font-size: 52px; line-height: 1.4; }
+.tabs button.active { box-shadow: inset 0 3px 0 var(--accent); }
+
+/* Frühling: Kirschblüte */
+html[data-theme="fruehling"] { --bg:#fdf3f6; --card:#fff; --text:#3a2a31; --muted:#8a6f79; --line:#f3dbe3; --accent:#c8507a; --accent-text:#fff; --accent2:#7fbf8a; --star:#f2a900; }
+/* Sommer: Meer & Sonne */
+html[data-theme="sommer"] { --bg:#fff8e6; --card:#fff; --text:#2b2a24; --muted:#7d7658; --line:#f1e6c4; --accent:#0b7f96; --accent-text:#fff; --accent2:#f5b83d; --star:#f59e0b; }
+/* Herbst: Kürbis & Laub */
+html[data-theme="herbst"] { --bg:#fbf3e8; --card:#fffaf3; --text:#3b2a1e; --muted:#8a7360; --line:#ecd9c2; --accent:#b5541c; --accent-text:#fff; --accent2:#d9a441; --star:#e0a100; }
+/* Winter: Schnee & Eisblau */
+html[data-theme="winter"] { --bg:#eef3f9; --card:#fff; --text:#1f2a37; --muted:#6a7a8c; --line:#d3deec; --accent:#3b6ea5; --accent-text:#fff; --accent2:#a9c9ec; --star:#e8a800; }
+/* Ostern: Pastell */
+html[data-theme="ostern"] { --bg:#fffbea; --card:#fff; --text:#2f2a3a; --muted:#7d7390; --line:#eadff5; --accent:#7d5fb5; --accent-text:#fff; --accent2:#f2d46b; --star:#f2a900; }
+/* Weihnachten: Rot & Tannengrün */
+html[data-theme="weihnachten"] { --bg:#fbf3f0; --card:#fff; --text:#2a1f1f; --muted:#826b69; --line:#ecd5d0; --accent:#b3202a; --accent-text:#fff; --accent2:#1f7a4a; --star:#d4a017; }
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="fruehling"] { --bg:#1d1519; --card:#281d23; --text:#f6e9ee; --muted:#b79ca8; --line:#3b2a32; --accent:#f08cae; --accent-text:#2a0f1a; --accent2:#8fcf9a; }
+  html[data-theme="sommer"] { --bg:#11191c; --card:#192428; --text:#eef6f7; --muted:#9ab3b8; --line:#26373d; --accent:#3cc0d9; --accent-text:#04222a; --accent2:#f5b83d; }
+  html[data-theme="herbst"] { --bg:#1c1511; --card:#271d17; --text:#f6ebe0; --muted:#b59c88; --line:#3a2b21; --accent:#f0925a; --accent-text:#2b1204; --accent2:#d9a441; }
+  html[data-theme="winter"] { --bg:#10161d; --card:#19222c; --text:#e9f0f8; --muted:#93a4b8; --line:#273443; --accent:#7fb0e6; --accent-text:#08182a; --accent2:#b8d4f2; }
+  html[data-theme="ostern"] { --bg:#17141d; --card:#211c2a; --text:#f1ecf8; --muted:#a99cc0; --line:#332b40; --accent:#b79cf0; --accent-text:#180c33; --accent2:#f2d46b; }
+  html[data-theme="weihnachten"] { --bg:#1b1212; --card:#261918; --text:#f7ebe8; --muted:#b99b97; --line:#3b2827; --accent:#f06a6f; --accent-text:#2a0709; --accent2:#5fbf85; }
+}

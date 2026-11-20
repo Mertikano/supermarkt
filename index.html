@@ -16,7 +16,7 @@
 <body>
 
 <header class="topbar">
-  <h1 id="title">Produkte</h1>
+  <h1><span id="themeEmoji"></span> <span id="title">Produkte</span></h1>
   <button id="addBtn" class="btn primary" aria-label="Neues Produkt">+ Neu</button>
 </header>
 
@@ -43,7 +43,7 @@
         <tbody id="tbody"></tbody>
       </table>
     </div>
-    <p id="empty" class="empty" hidden>Noch keine Produkte. Tippe oben auf „+ Neu".</p>
+    <p id="empty" class="empty" hidden><span id="emptyEmoji" class="big-emoji"></span><br>Noch keine Produkte. Tippe oben auf „+ Neu".</p>
     <p id="count" class="count"></p>
   </section>
 
@@ -56,6 +56,11 @@
 
   <!-- Backup -->
   <section id="view-backup" class="view" hidden>
+    <div class="card">
+      <h2>Design</h2>
+      <p>Das Design wechselt automatisch mit der Jahreszeit, an Ostern und an Weihnachten. Du kannst es aber auch fest einstellen.</p>
+      <select id="themeSel" aria-label="Design"></select>
+    </div>
     <div class="card">
       <h2>Backup</h2>
       <p>Alle Produkte, Kategorien und Bilder werden in einer einzelnen Datei gesichert. Speichere sie in iCloud Drive oder schicke sie dir selbst. Auf dem neuen Handy importierst du sie hier wieder.</p>
@@ -76,7 +81,7 @@
 <nav class="tabs">
   <button data-view="products" class="active">Produkte</button>
   <button data-view="categories">Kategorien</button>
-  <button data-view="backup">Backup</button>
+  <button data-view="backup">Mehr</button>
 </nav>
 
 <!-- Produkt-Dialog -->
