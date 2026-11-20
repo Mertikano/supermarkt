@@ -412,10 +412,12 @@ function autoTheme(now = new Date()) {
 function themePref() {
   try { return localStorage.getItem("theme") || "auto"; } catch { return "auto"; }
 }
+const APP_VERSION = "4";
 function applyTheme() {
   const pref = themePref();
   const name = THEMES[pref] ? pref : autoTheme();
   document.documentElement.dataset.theme = name;
+  $("version").textContent = `Version ${APP_VERSION} · aktives Design: ${THEMES[name].label}`;
   $("themeEmoji").textContent = THEMES[name].emoji;
   $("emptyEmoji").textContent = THEMES[name].emoji;
   const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
@@ -431,7 +433,11 @@ $("themeSel").onchange = (e) => {
   applyTheme();
 };
 document.addEventListener("visibilitychange", () => { if (!document.hidden) applyTheme(); });
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+try {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", applyTheme);
+  else if (mq.addListener) mq.addListener(applyTheme);
+} catch {}
 applyTheme();
 
 /* ---------- Start ---------- */
